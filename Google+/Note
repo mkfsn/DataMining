@@ -31,4 +31,6 @@
 #### 搜尋使用者，利用給定的字串來搜尋
 #### 應該可利用來搜尋"隨機"之使用者的資料
 
-
+## Reference
+https://console.developers.google.com/project/483333101418/apiui/api/plus?authuser=0
+http://nbviewer.ipython.org/github/ptwobrussell/Mining-the-Social-Web-2nd-Edition/blob/master/ipynb/Chapter%204%20-%20Mining%20Google+.ipynb
