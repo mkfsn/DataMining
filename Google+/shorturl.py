@@ -18,7 +18,7 @@ except ImportError:
     sys.exit(1)
 
 
-def main(url):
+def queryCheckshorturl(url):
     r = requests.post("http://checkshorturl.com/expand.php", data={"u":url})
     if r.status_code == 200:
         d = pq(r.text)
@@ -27,8 +27,12 @@ def main(url):
     else:
         print "Error: " + r.status_code
 
+def redirectURL(url):
+    r = requests.head(url)
+    print r.headers['location']
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print "Usage: ./shorturl.py [url]"
     else:
-        main(sys.argv[1])
+        redirectURL(sys.argv[1])
