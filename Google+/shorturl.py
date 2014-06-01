@@ -22,10 +22,10 @@ def main(url):
     r = requests.post("http://checkshorturl.com/expand.php", data={"u":url})
     if r.status_code == 200:
         d = pq(r.text)
-        p = d("table tr:nth-child(1) td:nth-child(2)")
-        print p.text()
+        p = d("table tr:nth-child(1) td:nth-child(2) a")
+        print pq(p).attr("href")
     else:
-        print "Error"
+        print "Error: " + r.status_code
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
