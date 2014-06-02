@@ -29,8 +29,10 @@ def queryCheckshorturl(url):
 
 def redirectURL(url):
     r = requests.head(url)
-    if r.headers['location']:
+    if 'location' in r.headers and r.headers['location']:
       return r.headers['location']
+    else:
+      return None
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
