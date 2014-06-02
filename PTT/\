@@ -1,0 +1,3 @@
+#!/bin/python
+
+getPage("http://www.google..com").addCallBack(printPage)
