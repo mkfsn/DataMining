@@ -32,18 +32,14 @@ def main(url):
     for i in p:
         print pq(i).attr("href")
     # author
-    p = d(".article-metaline:nth-child(1) .article-meta-value")
+    p = d(".article-metaline:eq(0) .article-meta-value")
     print p.text().split("(")[0]
     # title
-    p = d(".article-metaline:nth-child(3) .article-meta-value")
+    p = d(".article-metaline:eq(1) .article-meta-value")
     print p.text()
     # datetime
-    p = d(".article-metaline:nth-child(4) .article-meta-value")
+    p = d(".article-metaline:eq(2) .article-meta-value")
     print p.text()
-
-    p = d(".article-metaline:nth-child(2)")
-    print p
-
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
