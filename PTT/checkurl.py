@@ -1,15 +1,11 @@
 #!/usr/bin/python
 
+import os, sys
 import re 
-import sys
 import shorturl
-import time
 import sqlite3
-import os
 
 infile = open('Gossipurl.txt','r')
-outfile = open('sh_Gossipurl.txt','w+')
-outfile2 = open('lg_Gossipurl.txt','w+')
 database = 'urls.db'
 
 if os.path.isfile(database):
@@ -24,24 +20,26 @@ for url in infile:
   url = url.split('\n')[0]
 
   page = re.match("^[0-9]",url)
-  ppturl = re.match("^https?://ppt.cc/", url)
-  goourl = re.match("^https?://goo.gl/", url)
-  orzurl = re.match("^https?://0rz.tw/", url)
-  youtuurl = re.match("^https?://youtu.be/", url)
-  fburl = re.match("^https?://fb.com/", url)
-  bitlyurl = re.match("^https?://bit.ly/", url)
-  bitlyurl2 = re.match("^https?://bitly.com/", url)
-  tinyurl = re.match("^https?://tinyurl.cm/", url)
-  xcourl = re.match("^https?://x.co/", url)
-  twitter = re.match("^https?://t.co/", url)
+
+  r_list = [
+    re.compile("^https?://ppt.cc/"),
+    re.compile("^https?://goo.gl/"),
+    re.compile("^https?://0rz.tw/"),
+    re.compile("^https?://youtu.be/"),
+    re.compile("^https?://fb.com/"),
+    re.compile("^https?://bit.ly/"),
+    re.compile("^https?://bitly.com/"),
+    re.compile("^https?://tinyurl.cm/"),
+    re.compile("^https?://x.co/"),
+    re.compile("^https?://t.co/")
+  ]
 
   if page : 
-    outfile.write(url)
     print url
     continue
 
   flag = False
-  if flag or ppturl or goourl or orzurl or youtuurl or fburl or bitlyurl or bitlyurl2 or tinyurl or xcourl or twitter:
+  if flag or any(r.match(url) for r in r_list):
     # Search database
     cursor.execute('SELECT * FROM urls WHERE entry = ?', (url,))
     result = cursor.fetchall()
@@ -56,14 +54,5 @@ for url in infile:
     else:
       #print "Already exists: ", url,
       pass
-    # outfile.write('\n')
-  else :
-    # outfile2.write(url)
-    # print "else: ", url
-    #print "Not shorturl: ", url
-    pass
-  #time.sleep(1)  
 
-infile.close()
-outfile.close()
-outfile2.close()
+con.close()
