@@ -17,29 +17,35 @@ except ImportError:
     sys.exit(1)
 
 
-def main(url):
-    cookies = dict(over18='1')
-    r = requests.get(url, cookies=cookies)
-    d = pq(r.text)
+class parser:
+    def __init__ (self,url):
+        self.cookies = dict(over18='1')
+        self.r = requests.get(url, cookies=self.cookies)
+        self.d = pq(self.r.text)
     # push
-    p = d(".push a")
-    for i in p:
-        link = pq(i).attr("href")
-        userid = pq(i).parents(".push").find(".push-userid").text()
-        print userid, ":", link
-    # main article 
-    p = d("#main-content > a")
-    for i in p:
-        print pq(i).attr("href")
+    def pushurl(self):
+        self.p = self.d(".push a")
+        for i in self.p:
+            link = pq(i).attr("href")
+            userid = pq(i).parents(".push").find(".push-userid").text()
+            return userid, link
+    # main article
+    def articleurl(self):
+        self.p = self.d("#main-content > a")
+        for i in self.p:
+            return pq(i).attr("href")
     # author
-    p = d(".article-metaline:eq(0) .article-meta-value")
-    print p.text().split("(")[0]
+    def author(self):
+        self.p = self.d(".article-metaline:eq(0) .article-meta-value")
+        return self.p.text().split("(")[0].split(" ")[0]
     # title
-    p = d(".article-metaline:eq(1) .article-meta-value")
-    print p.text()
+    def title(self):
+        self.p = self.d(".article-metaline:eq(1) .article-meta-value")
+        return self.p.text()
     # datetime
-    p = d(".article-metaline:eq(2) .article-meta-value")
-    print p.text()
+    def datetime(self):
+        self.p = self.d(".article-metaline:eq(2) .article-meta-value")
+        return self.p.text()
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
