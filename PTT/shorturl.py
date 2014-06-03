@@ -5,6 +5,14 @@ __author__= 'mkfsn'
 
 import sys
 
+class bcolors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
 try:
     import requests
 except ImportError:
@@ -29,6 +37,14 @@ def queryCheckshorturl(url):
 
 def redirectURL(url):
     r = requests.head(url)
+    if str(r.status_code)[0] == '3':
+        info = bcolors.BLUE + '[ %s ] %s %s\n'%(r.status_code, url, r.headers['location']) + bcolors.ENDC
+    elif str(r.status_code)[0] == '2':
+        info = bcolors.GREEN + '[ %s ] %s\n'%(r.status_code, url) + bcolors.ENDC
+    else:
+        info = bcolors.HEADER + '[ %s ] %s\n'%(r.status_code, url) + bcolors.ENDC
+    sys.stderr.write(info)
+
     if 'location' in r.headers and r.headers['location']:
       return r.headers['location']
     else:
@@ -38,4 +54,5 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print "Usage: ./shorturl.py [url]"
     else:
-        queryCheckshorturl(sys.argv[1])
+        # queryCheckshorturl(sys.argv[1])
+        redirectURL(sys.argv[1])
