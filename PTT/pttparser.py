@@ -2,13 +2,22 @@
 import pycurl
 import HTMLParser
 import re
-import sys
+import os,sys
 import time
+import query as q
+import sqlite3
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 start = 550
 stop = 4500
+
+database = 'datamining'
+
+if os.path.isfile(database):
+  con = sqlite3.connect(database)
+  con.text_factory = str
+  cursor = con.cursor()
 
 target_agent = "Opera/9.80 (Windows NT 5.1; U; cs) Presto/2.2.15 Version/10.00"
 
@@ -31,18 +40,13 @@ class URLParser(HTMLParser.HTMLParser):
   def __init__(self):
     HTMLParser.HTMLParser.__init__(self)
     self.urls = []
-    self.links = []
   def handle_starttag(self, tag, attributes):
-    if tag != 'a':return
+    if tag != 'a' : return
     for name, value in attributes:
       if name == 'href' and value not in self.urls:
         article = re.match("^/bbs/Gossiping/M.",value)
-        outlink = re.match("^((http|https):\/\/)",value)
-        pttlink = re.match("^((http|https):\/\/)?www.ptt.cc",value)
         if article:
           self.urls.append(value)
-        if outlink and not pttlink:
-          self.links.append(value)
 
 
 def crawler(url,mode):  # 0: links to artical, 1: links to outside ptt
@@ -57,34 +61,38 @@ def crawler(url,mode):  # 0: links to artical, 1: links to outside ptt
   testcurl.close()
   parser = URLParser()
   parser.feed( mypage.contents)
-  if mode:
-    for links in parser.links:
-      linklist.append(links)
-  else:
-    for url in parser.urls:
-      origin = 'http://www.ptt.cc'+ url
-      articals.append(origin)
+  for url in parser.urls:
+    origin = 'http://www.ptt.cc'+ url
+    articals.append(origin)
 
 
-outfile = open('Gossipurl.txt','w')
 while start != stop:
-  outfile.write(str(start))
-  outfile.write('\n')
+  print start
   articals = []
   linklist = []
   target_url = "http://www.ptt.cc/bbs/Gossiping/index" + str(start) + ".html" 
   crawler(target_url,0)
   start = start + 1
-  time.sleep(1)
+  #time.sleep(1)
 
-  for url in articals:
-    print url
-    crawler(url,1)
-
-  for link in linklist:
-    outfile.write(link)
-    outfile.write('\n')
-
-outfile.close()
-
+  for alink in articals:
+    cursor.execute("SELECT count(*) FROM ptt where alink = ?" , (alink,))
+    r = cursor.fetchall()
+    if r[0][0] != 0:
+      continue 
+    a = q.parser(alink)
+    if a.articleurl():
+      title = a.title()
+      date = a.datetime()
+      author = a.author()
+      url = a.articleurl()
+      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
+      con.commit()
+    if a.pushurl():
+      title = a.title()
+      date = a.datetime()
+      author = a.pushurl()[0]
+      url = a.pushurl()[1]
+      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
+      con.commit()
 
