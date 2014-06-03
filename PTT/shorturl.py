@@ -36,7 +36,21 @@ def queryCheckshorturl(url):
         print "Error: " + r.status_code
 
 def redirectURL(url):
-    r = requests.head(url)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Encoding': 'gzip,deflate,sdch',
+        'Accept-Language': 'zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4,ja;q=0.2',
+        'Pragma': 'no-cache',
+        'Connection' : 'keep-alive'
+        }
+    try:
+        r = requests.head(url, headers=headers)
+    except requests.exceptions.ConnectionError as e:
+        info = bcolors.FAIL + '[ %s ] %s\n'%(r.status_code, url) + bcolors.ENDC
+        sys.stderr.write(info)
+        return {"url":'', "status":-1}
+
     if str(r.status_code)[0] == '3':
         info = bcolors.BLUE + '[ %s ] %s %s\n'%(r.status_code, url, r.headers['location']) + bcolors.ENDC
     elif str(r.status_code)[0] == '2':
@@ -45,10 +59,11 @@ def redirectURL(url):
         info = bcolors.HEADER + '[ %s ] %s\n'%(r.status_code, url) + bcolors.ENDC
     sys.stderr.write(info)
 
+    res = {"url":'', "status":r.status_code}
+
     if 'location' in r.headers and r.headers['location']:
-      return r.headers['location']
-    else:
-      return None
+        res['url'] = r.headers['location']
+    return res
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
