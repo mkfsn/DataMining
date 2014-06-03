@@ -21,6 +21,7 @@ else:
     sys.exit(0)
 
 for url in infile:
+  url = url.split('\n')[0]
 
   page = re.match("^[0-9]",url)
   ppturl = re.match("^http://ppt.cc", url) 
@@ -35,6 +36,7 @@ for url in infile:
 
   if page : 
     outfile.write(url)
+    print url
 
   if ppturl or goourl or orzurl or youtuurl or fburl or bitlyurl or bitlyurl2 or tinyurl or xcourl:
     # Search database
@@ -52,12 +54,14 @@ for url in infile:
     elif  result[0][1] is '':
       pass
     else:
-      print "Already exists: ", url,
+      #print "Already exists: ", url,
+      pass
     # outfile.write('\n')
   else :
     # outfile2.write(url)
     # print "else: ", url
-    print "Not shorturl: ", url
+    #print "Not shorturl: ", url
+    pass
   #time.sleep(1)  
 
 infile.close()
