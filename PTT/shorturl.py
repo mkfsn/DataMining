@@ -47,7 +47,7 @@ def redirectURL(url):
     try:
         r = requests.head(url, headers=headers)
     except requests.exceptions.ConnectionError as e:
-        info = bcolors.FAIL + '[ %s ] %s\n'%(r.status_code, url) + bcolors.ENDC
+        info = bcolors.FAIL + '[ %s ] %s\n'%(-1, url) + bcolors.ENDC
         sys.stderr.write(info)
         return {"url":'', "status":-1}
 
