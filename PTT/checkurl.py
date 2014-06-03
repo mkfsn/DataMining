@@ -24,15 +24,16 @@ for url in infile:
   url = url.split('\n')[0]
 
   page = re.match("^[0-9]",url)
-  ppturl = re.match("^http://ppt.cc/", url)
-  goourl = re.match("^http://goo.gl/", url)
-  orzurl = re.match("^http://0rz.tw/", url)
-  youtuurl = re.match("^http://youtu.be/", url)
-  fburl = re.match("^http://fb.com/", url)
-  bitlyurl = re.match("^http://bit.ly/", url)
-  bitlyurl2 = re.match("^http://bitly.com/", url)
-  tinyurl = re.match("^http://tinyurl.cm/", url)
-  xcourl = re.match("^http://x.co/", url)
+  ppturl = re.match("^https?://ppt.cc/", url)
+  goourl = re.match("^https?://goo.gl/", url)
+  orzurl = re.match("^https?://0rz.tw/", url)
+  youtuurl = re.match("^https?://youtu.be/", url)
+  fburl = re.match("^https?://fb.com/", url)
+  bitlyurl = re.match("^https?://bit.ly/", url)
+  bitlyurl2 = re.match("^https?://bitly.com/", url)
+  tinyurl = re.match("^https?://tinyurl.cm/", url)
+  xcourl = re.match("^https?://x.co/", url)
+  twitter = re.match("^https?://t.co/", url)
 
   if page : 
     outfile.write(url)
@@ -40,7 +41,7 @@ for url in infile:
     continue
 
   flag = False
-  if flag or ppturl or goourl or orzurl or youtuurl or fburl or bitlyurl or bitlyurl2 or tinyurl or xcourl:
+  if flag or ppturl or goourl or orzurl or youtuurl or fburl or bitlyurl or bitlyurl2 or tinyurl or xcourl or twitter:
     # Search database
     cursor.execute('SELECT * FROM urls WHERE entry = ?', (url,))
     result = cursor.fetchall()
