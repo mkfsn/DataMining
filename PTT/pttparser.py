@@ -9,10 +9,10 @@ import sqlite3
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-start = 550
+start = int(sys.argv[1]) if len(sys.argv) > 1 else 500
 stop = 4500
 
-database = 'datamining'
+database = 'datamining.db'
 
 if os.path.isfile(database):
   con = sqlite3.connect(database)
@@ -81,18 +81,18 @@ while start != stop:
     if r[0][0] != 0:
       continue 
     a = q.parser(alink)
-    if a.articleurl():
-      title = a.title()
-      date = a.datetime()
-      author = a.author()
-      url = a.articleurl()
+
+    title  = a.title()
+    date   = a.datetime()
+    author = a.author()
+
+    for url in a.articleurl() or [] :
       cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
       con.commit()
-    if a.pushurl():
-      title = a.title()
-      date = a.datetime()
-      author = a.pushurl()[0]
-      url = a.pushurl()[1]
-      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
+    for info in a.pushurl():
+      author = info[0]
+      url = info[1]
+      pdate = info[2]
+      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, pdate, author, url, alink,))
       con.commit()
 
