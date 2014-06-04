@@ -4,6 +4,8 @@ __date__= 'Jun 03, 2014 '
 __author__= 'mkfsn'
 
 import sys
+import urllib2
+
 try:
     import requests
 except ImportError:
@@ -19,21 +21,31 @@ except ImportError:
 
 class parser:
     def __init__ (self,url):
-        self.cookies = dict(over18='1')
-        self.r = requests.get(url, cookies=self.cookies)
-        self.d = pq(self.r.text)
+        opener = urllib2.build_opener()
+        opener.addheaders.append(('Cookie', 'over18=1'))
+        self.r = opener.open(url)
+        self.d = pq(self.r.read())
+        # self.cookies = dict(over18='1')
+        # self.r = requests.get(url, cookies=self.cookies)
+        # self.d = pq(self.r.text)
     # push
     def pushurl(self):
         self.p = self.d(".push a")
+        urllist = []
         for i in self.p:
             link = pq(i).attr("href")
-            userid = pq(i).parents(".push").find(".push-userid").text()
-            return userid, link
+            parent = pq(i).parents(".push")
+            userid = pq(parent).find(".push-userid").text()
+            date   = pq(parent).find(".push-ipdatetime").text()
+            urllist.append([userid, link, date])
+        return urllist
     # main article
     def articleurl(self):
         self.p = self.d("#main-content > a")
+        urllist = []
         for i in self.p:
-            return pq(i).attr("href")
+            urllist.append( pq(i).attr("href") )
+        return urllist
     # author
     def author(self):
         self.p = self.d(".article-metaline:eq(0) .article-meta-value")
