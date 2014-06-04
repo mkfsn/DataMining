@@ -1,5 +1,58 @@
-### Reference
+## Installation
+
+* https://developers.google.com/api-client-library/python/start/installation
+* Using `easy_install` or `pip`
+
+**
+
+## Process
+
+
+**
+
+## Usage
+
+#### [plus.people.get]
+##### Requires : userId(@String)
+
+##### 取得給定 userId 之使用者資料
+
+**
+
+#### [plus.activities.list]
+##### Requires : userId, colllection(public)
+
+##### 可以取得使用者所發之文章（公開發表）
+
+**
+
+#### [plus.activities.search]
+##### Requires : query(@string)
+
+##### 取得使用者所發表的所有文章，需經過使用者的授權
+
+**
+
+#### [plus.people.list]
+##### Requires : userId, collection(connected, visible)
+
+##### 取得使用者之好友列表，需經過使用者授權
+
+**
+
+#### [plus.people.search]
+##### Reuqires : query(@string)
+
+##### 搜尋使用者，利用給定的字串來搜尋
+##### 應該可利用來搜尋"隨機"之使用者的資料
+
+**
+
+## Reference
 
 - http://decisionstats.com/2011/09/16/google-plus-api-statistical-text-mining-anyone/
 - http://www.snaphix.com/2014/04/data-mining-google-plus-hashtags-nod3x.html
 - https://console.developers.google.com/project/483333101418/apiui/api/plus
+
+- https://console.developers.google.com/project/483333101418/apiui/api/plus?authuser=0
+- http://nbviewer.ipython.org/github/ptwobrussell/Mining-the-Social-Web-2nd-Edition/blob/master/ipynb/Chapter%204%20-%20Mining%20Google+.ipynb
