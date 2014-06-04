@@ -23,8 +23,12 @@ class parser:
     def __init__ (self,url):
         opener = urllib2.build_opener()
         opener.addheaders.append(('Cookie', 'over18=1'))
-        self.r = opener.open(url)
-        self.d = pq(self.r.read())
+        try:
+            self.r = opener.open(url)
+            self.d = pq(self.r.read())
+        except urllib2.HTTPError, e:
+            if e.code == 404:
+                self.d = pq("<html></html>")
         # self.cookies = dict(over18='1')
         # self.r = requests.get(url, cookies=self.cookies)
         # self.d = pq(self.r.text)
