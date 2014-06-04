@@ -16,10 +16,13 @@ class GoogleAPI:
     service = None
 
     def __init__ (self, config):
+        http = httplib2.Http()
+        # Disable ssl
+        http.disable_ssl_certificate_validation = True
         self.service = apiclient.discovery.build (
             'plus', 
             'v1', 
-            http = httplib2.Http(), 
+            http = http,
             developerKey = config['API_KEY']
         )
 
