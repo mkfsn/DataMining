@@ -48,11 +48,16 @@ for url in infile:
       shurl = shorturl.redirectURL(url)
       # ShortURL, OriginURL, StatusCode
       cursor.execute("INSERT INTO urls VALUES (?,?,?)", (url, shurl['url'], shurl['status'],))
-      con.commit()
+
     elif  result[0][1] is '':
       pass
     else:
       #print "Already exists: ", url,
       pass
+  else:
+    # print "\033[1;31m" + url + "\033[0m"
+    cursor.execute("INSERT OR IGNORE INTO urls VALUES (?,?,?)", (url, url, 200,))
+
+  con.commit()
 
 con.close()
