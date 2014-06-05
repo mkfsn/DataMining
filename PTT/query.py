@@ -20,15 +20,30 @@ except ImportError:
 
 
 class parser:
-    def __init__ (self,url):
-        opener = urllib2.build_opener()
-        opener.addheaders.append(('Cookie', 'over18=1'))
-        try:
-            self.r = opener.open(url)
-            self.d = pq(self.r.read())
-        except urllib2.HTTPError, e:
-            if e.code == 404:
+    d = pq('<html></html>')
+    def __init__ (self, url):
+        attempt = 3
+        while attempt:
+            # Try three time
+            opener = urllib2.build_opener()
+            opener.addheaders.append(('Cookie', 'over18=1'))
+            try:
+                self.r = opener.open(url)
+                self.d = pq(self.r.read())
+                attempt = 0
+            except urllib2.URLError, e:
+                print e
+                print url
+                attempt = attempt - 1
+                print "Try %d more ... " %(attempt)
+            except urllib2.HTTPError, e:
+                # Error occurs, try more
+                attempt = attempt - 1
+                print e
+                print url
+                print "Try %d more ... " %(attempt)
                 self.d = pq("<html></html>")
+
         # self.cookies = dict(over18='1')
         # self.r = requests.get(url, cookies=self.cookies)
         # self.d = pq(self.r.text)
