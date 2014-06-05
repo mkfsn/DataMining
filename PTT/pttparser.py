@@ -9,8 +9,6 @@ import sqlite3
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-start = int(sys.argv[1]) if len(sys.argv) > 1 else 500
-stop = 4500
 
 database = 'datamining.db'
 
@@ -44,7 +42,7 @@ class URLParser(HTMLParser.HTMLParser):
     if tag != 'a' : return
     for name, value in attributes:
       if name == 'href' and value not in self.urls:
-        article = re.match("^/bbs/Gossiping/M.",value)
+        article = re.match("^/bbs/NBA/M.",value)
         if article:
           self.urls.append(value)
 
@@ -66,11 +64,15 @@ def crawler(url,mode):  # 0: links to artical, 1: links to outside ptt
     articals.append(origin)
 
 
+start = int(sys.argv[1]) if len(sys.argv) > 1 else 100
+stop = 1676
+
 while start != stop:
   print start
   articals = []
   linklist = []
-  target_url = "http://www.ptt.cc/bbs/Gossiping/index" + str(start) + ".html" 
+  #target_url = "http://www.ptt.cc/bbs/Gossiping/index" + str(start) + ".html" 
+  target_url = "http://www.ptt.cc/bbs/NBA/index" + str(start) + ".html" 
   crawler(target_url,0)
   start = start + 1
   #time.sleep(1)
