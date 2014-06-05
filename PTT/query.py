@@ -20,7 +20,7 @@ except ImportError:
 
 
 class parser:
-    #d = pq('<html></html>')
+    d = pq('<html></html>')
     def __init__ (self, url):
         attempt = 3
         while attempt:
