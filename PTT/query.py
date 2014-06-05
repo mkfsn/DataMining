@@ -20,7 +20,7 @@ except ImportError:
 
 
 class parser:
-    d = pq('<html></html>')
+    #d = pq('<html></html>')
     def __init__ (self, url):
         attempt = 3
         while attempt:
@@ -29,7 +29,8 @@ class parser:
             opener.addheaders.append(('Cookie', 'over18=1'))
             try:
                 self.r = opener.open(url)
-                self.d = pq(self.r.read())
+                text = unicode(self.r.read(),'utf-8')
+                self.d = pq(text)
                 attempt = 0
             except urllib2.URLError, e:
                 print e
@@ -42,11 +43,11 @@ class parser:
                 print e
                 print url
                 print "Try %d more ... " %(attempt)
-                self.d = pq("<html></html>")
 
         # self.cookies = dict(over18='1')
         # self.r = requests.get(url, cookies=self.cookies)
         # self.d = pq(self.r.text)
+
     # push
     def pushurl(self):
         self.p = self.d(".push a")
