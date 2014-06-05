@@ -42,7 +42,7 @@ class URLParser(HTMLParser.HTMLParser):
     if tag != 'a' : return
     for name, value in attributes:
       if name == 'href' and value not in self.urls:
-        article = re.match("^/bbs/NBA/M.",value)
+        article = re.match("^/bbs/LoL/M.",value)
         if article:
           self.urls.append(value)
 
@@ -50,7 +50,7 @@ class URLParser(HTMLParser.HTMLParser):
 def crawler(url,mode):  # 0: links to artical, 1: links to outside ptt
   mypage = GetPageByFakeBrowser(url,target_agent)
   testcurl = pycurl.Curl()
-  testcurl.setopt(testcurl.COOKIE,'over18=1')
+  #testcurl.setopt(testcurl.COOKIE,'over18=1')
   testcurl.setopt(testcurl.URL,mypage.url)
   testcurl.setopt(testcurl.USERAGENT, mypage.ua)
   testcurl.setopt(testcurl.WRITEFUNCTION,mypage.read_page)
@@ -65,20 +65,20 @@ def crawler(url,mode):  # 0: links to artical, 1: links to outside ptt
 
 
 start = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-stop = 1676
+stop = 1863
 
 while start != stop:
   print start
   articals = []
   linklist = []
   #target_url = "http://www.ptt.cc/bbs/Gossiping/index" + str(start) + ".html" 
-  target_url = "http://www.ptt.cc/bbs/NBA/index" + str(start) + ".html" 
+  target_url = "http://www.ptt.cc/bbs/LoL/index" + str(start) + ".html" 
   crawler(target_url,0)
   start = start + 1
   #time.sleep(1)
 
   for alink in articals:
-    cursor.execute("SELECT count(*) FROM ptt where alink = ?" , (alink,))
+    cursor.execute("SELECT count(*) FROM LoL where alink = ?" , (alink,))
     r = cursor.fetchall()
     if r[0][0] != 0:
       continue 
@@ -89,12 +89,12 @@ while start != stop:
     author = a.author()
 
     for url in a.articleurl() or [] :
-      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
+      cursor.execute("INSERT INTO LoL VALUES (?,?,?,?,?)", (title, date, author, url, alink,))
       con.commit()
     for info in a.pushurl():
       author = info[0]
       url = info[1]
       pdate = info[2]
-      cursor.execute("INSERT INTO ptt VALUES (?,?,?,?,?)", (title, pdate, author, url, alink,))
+      cursor.execute("INSERT INTO LoL VALUES (?,?,?,?,?)", (title, pdate, author, url, alink,))
       con.commit()
 
