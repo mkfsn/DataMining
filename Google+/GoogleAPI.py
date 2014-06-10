@@ -3,8 +3,10 @@
 __date__= ' 4月 30, 2014 '
 __author__= 'mkfsn'
 
+import sys
 import httplib2
 import json
+from pyquery import PyQuery as pq
 
 # sudo apt-get install python-pip python-dev build-essential 
 # sudo pip install google-api-python-client
@@ -35,13 +37,13 @@ class GoogleAPI:
         return profile
 
 
-    def activities_list (self, userid):
+    def activities_list (self, userid, nextpage):
 
         if self.service is None:
             return None
 
         activities = self.service.activities().list(userId = userid,
-                collection='public').execute()
+                collection='public', pageToken=nextpage).execute()
         return activities
 
 
@@ -52,6 +54,15 @@ class GoogleAPI:
 
         people = self.service.people().search(query = query).execute()
         return people
+
+    def comments_list (self, activityid):
+
+        if self.service is None:
+            return None
+
+        comments = self.service.comments().list(activityId = activityid,
+                maxResults = 500).execute()
+        return comments
 
 
 def test ():
