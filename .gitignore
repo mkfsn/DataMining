@@ -1,2 +1,3 @@
 *.pyc
 *.db
+mkfsn_secrets.json
